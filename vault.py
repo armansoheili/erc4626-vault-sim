@@ -109,6 +109,27 @@ class Vault:
         """Shares held by ``user``."""
         return self._shares.get(user, 0)
 
+    def holders(self):
+        """Users holding a nonzero share balance, richest first.
+
+        >>> v = Vault("Vault")
+        >>> v.deposit("alice", 1000)
+        1000
+        >>> v.deposit("bob", 500)
+        500
+        >>> v.deposit("carol", 1500)
+        1500
+        >>> v.redeem("bob", 500)
+        500
+        >>> v.holders()
+        ['carol', 'alice']
+        """
+        return sorted(
+            (u for u, b in self._shares.items() if b > 0),
+            key=lambda u: self._shares[u],
+            reverse=True,
+        )
+
     def share_price(self):
         """Assets per share as a float (1.0 for an empty vault)."""
         if self._supply == 0:
