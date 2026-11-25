@@ -136,6 +136,29 @@ class Vault:
             return 1.0
         return self._assets / self._supply
 
+    def share_of(self, user):
+        """Fraction of the vault ``user`` owns (0.0 if they hold nothing).
+
+        >>> v = Vault("Vault")
+        >>> v.deposit("alice", 1000)
+        1000
+        >>> v.deposit("bob", 3000)
+        3000
+        >>> v.share_of("alice")
+        0.25
+        >>> v.share_of("bob")
+        0.75
+        >>> v.share_of("carol")
+        0.0
+        >>> v.redeem("bob", 3000)
+        3000
+        >>> v.share_of("alice")
+        1.0
+        """
+        if self._supply == 0:
+            return 0.0
+        return self.balance_of(user) / self._supply
+
     # -- conversion -----------------------------------------------------
 
     def convert_to_shares(self, assets):
